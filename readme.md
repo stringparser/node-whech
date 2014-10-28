@@ -3,10 +3,11 @@
 [<img alt="build" src="http://img.shields.io/travis/stringparser/which-blib/master.svg?style=flat-square" align="left"/>](https://travis-ci.org/stringparser/which-blib/builds)
 [<img alt="NPM version" src="http://img.shields.io/npm/v/which-blib.svg?style=flat-square" align="right"/>](http://www.npmjs.org/package/which-blib)
 
-Was the script run from bin?
-What is the main `node_modules`directory?
-There is some config file asociated to it?
-What is the global `node_modules` directory?
+<br>
+Was the script run from bin? <br>
+What is the main `node_modules`directory?<br>
+There is some config file asociated to it?<br>
+What is the global `node_modules` directory?<br>
 
 ## install
 
@@ -15,11 +16,11 @@ What is the global `node_modules` directory?
 ## usage 
 
 ```javascript
-var wlb = require('which-blib');
+var wbl = require('which-blib');
 
-wlb.packageFields = ['version'];
+wbl.packageFields = ['version'];
 
-wlb('which', function(err, config){
+wbl('which', function(err, config){
   if(err) throw err;
   console.log(config);
   // =>

@@ -15,15 +15,15 @@
   "repository": "stringparser/which-blib",
   "homepage": "https://github.com/stringparser/which-blib",
   "keywords": [
-    "utils",
-    "require",
+    "which",
+    "findup",
+    "configFile",
     "module",
-    "directory",
-    "files",
-    "filter",
-    "regexp",
-    "regex",
-    "small"
+    "cli",
+    "package",
+    "run",
+    "from",
+    "bin"
   ],
   "license": "MIT",
   "bugs": {
