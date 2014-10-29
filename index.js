@@ -6,14 +6,14 @@ var which = require('which');
 var findup = require('findup');
 var type = require('utils-type');
 
-exports = module.exports = whichBlib;
-exports.sync = syncWhichBlib;
+exports = module.exports = whech;
+exports.sync = whechSync;
 exports.packageFields = ['version'];
 
 var argv = process.argv;
 var main = process.mainModule;
 
-function whichBlib(cmd_, cb){
+function whech(cmd_, cb){
   var cmd = check(cmd_);
   cmd.cwd = cmd.cwd || process.cwd();
 
@@ -57,7 +57,7 @@ function whichBlib(cmd_, cb){
   });
 }
 
-function syncWhichBlib(cmd_){
+function whechSync(cmd_){
   var cmd = check(cmd_);
   cmd.cwd = process.cwd();
 
