@@ -11,7 +11,6 @@ exports.sync = whechSync;
 exports.packageFields = ['version'];
 
 var argv = process.argv;
-var main = process.mainModule;
 
 function whech(env_, cb){
   var env = check(env_);
@@ -59,7 +58,7 @@ function whech(env_, cb){
 
 function whechSync(env_){
   var env = check(env_);
-  env.cwd = process.cwd();
+  env.cwd = env.cwd || process.cwd();
 
   var which = require('which');
   var findup = require('findup-sync');
@@ -67,7 +66,7 @@ function whechSync(env_){
   env.which = which.sync(env.name);
   env.runFromBin = env.which === argv[1];
 
-  env.mainDir = path.join(process.cwd(), 'node_modules');
+  env.mainDir = path.join(env.cwd, 'node_modules');
   env.globalDir = null;
   // TODO: find a non hacky way to do this
   try{
