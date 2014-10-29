@@ -13,115 +13,115 @@ exports.packageFields = ['version'];
 var argv = process.argv;
 var main = process.mainModule;
 
-function whech(cmd_, cb){
-  var cmd = check(cmd_);
-  cmd.cwd = cmd.cwd || process.cwd();
+function whech(env_, cb){
+  var env = check(env_);
+  env.cwd = env.cwd || process.cwd();
 
-  which(cmd.name, function(err, whichName){
-    cmd.which = err || whichName;
-    cmd.runFromBin = cmd.which === argv[1];
+  which(env.name, function(err, whichName){
+    env.which = err || whichName;
+    env.runFromBin = env.which === argv[1];
 
     npm.load(function(cli, npm_){
-      cmd.mainDir = npm_.dir;
-      cmd.globalDir = npm_.globalDir;
+      env.mainDir = npm_.dir;
+      env.globalDir = npm_.globalDir;
 
-      var cliPackage; cmd.cliPackage = { };
-      var modulePackage; cmd.modulePackage = { };
-      var pack = path.join(cmd.name, 'package');
+      var cliPackage; env.cliPackage = { };
+      var modulePackage; env.modulePackage = { };
+      var pack = path.join(env.name, 'package');
 
-      try {  modulePackage = require(path.join(cmd.mainDir, pack));  }
-        catch(err){  cmd.modulePackage = err;  }
-      try {  cliPackage = require(path.join(cmd.globalDir, pack));  }
-        catch(err){  cmd.cliPackage = err;  }
+      try {  modulePackage = require(path.join(env.mainDir, pack));  }
+        catch(err){  env.modulePackage = err;  }
+      try {  cliPackage = require(path.join(env.globalDir, pack));  }
+        catch(err){  env.cliPackage = err;  }
 
-      copyFields(cmd, modulePackage, cliPackage);
+      copyFields(env, modulePackage, cliPackage);
 
-      if( cmd.runFromBin ){
-        cmd.extension = cmd.extension || '.js';
-        cmd.configFile = cmd.configFile || cmd.name + 'file';
-        if( !path.extname(cmd.configFile) ){  cmd.configFile += cmd.extension;  }
-        cmd.configFile = findup(cmd.configFile, { cwd : cmd.cwd });
+      if( env.runFromBin ){
+        env.extension = env.extension || '.js';
+        env.configFile = env.configFile || env.name + 'file';
+        if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
+        env.configFile = findup(env.configFile, { cwd : env.cwd });
 
-        findup(process.cwd(), cmd.configFile, function(err, configDir){
-          cmd.configFile = err || path.join(configDir, cmd.configFile);
-          cb(err, cmd);
+        findup(process.cwd(), env.configFile, function(err, configDir){
+          env.configFile = err || path.join(configDir, env.configFile);
+          cb(err, env);
         });
       } else {
-        cmd.configFile = argv[1];
-        if( cmd.configFile !== path.basename(cmd.configFile) ){
-          cmd.mainDir = path.join(cmd.cwd, path.dirname(cmd.configFile));
+        env.configFile = argv[1];
+        if( env.configFile !== path.basename(env.configFile) ){
+          env.mainDir = path.join(env.cwd, path.dirname(env.configFile));
         }
-        cb(err, cmd);
+        cb(err, env);
       }
     });
   });
 }
 
-function whechSync(cmd_){
-  var cmd = check(cmd_);
-  cmd.cwd = process.cwd();
+function whechSync(env_){
+  var env = check(env_);
+  env.cwd = process.cwd();
 
   var which = require('which');
   var findup = require('findup-sync');
 
-  cmd.which = which.sync(cmd.name);
-  cmd.runFromBin = cmd.which === argv[1];
+  env.which = which.sync(env.name);
+  env.runFromBin = env.which === argv[1];
 
-  cmd.mainDir = main.paths[0];
-  cmd.globalDir = null;
+  env.mainDir = path.join(process.cwd(), 'node_modules');
+  env.globalDir = null;
   // TODO: find a non hacky way to do this
   try{
-    cmd.globalDir = path.resolve(cmd.which, '..', '..', 'lib', 'node_modules');
+    env.globalDir = path.resolve(env.which, '..', '..', 'lib', 'node_modules');
   } catch(err){
-      cmd.which  = new Error('not found');
-      cmd.globalDir = new Error('counld not find globalDir');
+      env.which  = new Error('not found');
+      env.globalDir = new Error('counld not find globalDir');
     }
 
-  var cliPackage; cmd.cliPackage = { };
-  var modulePackage; cmd.modulePackage = { };
-  var pack = path.join(cmd.name, 'package');
-  try {  modulePackage = require(path.join(cmd.mainDir, pack));  }
-    catch(err){  cmd.modulePackage = err;  }
-  try {  cliPackage = require(path.join(cmd.globalDir, pack));  }
-    catch(err){  cmd.cliPackage = err;  }
+  var cliPackage; env.cliPackage = { };
+  var modulePackage; env.modulePackage = { };
+  var pack = path.join(env.name, 'package');
+  try {  modulePackage = require(path.join(env.mainDir, pack));  }
+    catch(err){  env.modulePackage = err;  }
+  try {  cliPackage = require(path.join(env.globalDir, pack));  }
+    catch(err){  env.cliPackage = err;  }
 
-  copyFields(cmd, modulePackage, cliPackage);
+  copyFields(env, modulePackage, cliPackage);
 
-  if( cmd.runFromBin ){
-    cmd.extension = cmd.extension || '.js';
-    cmd.configFile = cmd.configFile || cmd.name + 'file';
-    if( !path.extname(cmd.configFile) ){  cmd.configFile += cmd.extension;  }
-    cmd.configFile = findup(cmd.configFile, { cwd : cmd.cwd });
+  if( env.runFromBin ){
+    env.extension = env.extension || '.js';
+    env.configFile = env.configFile || env.name + 'file';
+    if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
+    env.configFile = findup(env.configFile, { cwd : env.cwd });
   } else {
-    cmd.configFile = argv[1];
-    if( cmd.configFile !== path.basename(cmd.configFile) ){
-      cmd.mainDir = path.join(cmd.cwd, path.dirname(cmd.configFile));
+    env.configFile = argv[1];
+    if( env.configFile !== path.basename(env.configFile) ){
+      env.mainDir = path.join(env.cwd, path.dirname(env.configFile));
     }
   }
 
-  return cmd;
+  return env;
 }
 
 
 
-function check(cmd){
-  var cmdIs = type(cmd);
-  var typeError = !cmdIs.match(/string|plainObject/);
-  if( typeError ){  throw new TypeError('`cmd` should  be string or object');  }
-  cmd = cmdIs.plainObject || { name : cmdIs.string };
-  if( !cmd.name ){  throw new Error('give a name to search');  }
-  cmd.name = cmd.name.toLowerCase();
-  return cmd;
+function check(env){
+  var envIs = type(env);
+  var typeError = !envIs.match(/string|plainObject/);
+  if( typeError ){  throw new TypeError('`env` should  be string or object');  }
+  env = envIs.plainObject || { name : envIs.string };
+  if( !env.name ){  throw new Error('give a name to search');  }
+  env.name = env.name.toLowerCase();
+  return env;
 }
 
-function copyFields(cmd, modulePackage, cliPackage){
+function copyFields(env, modulePackage, cliPackage){
   if( !exports.packageFields.length ){ return ; }
   exports.packageFields.forEach(function(field){
     if( cliPackage && cliPackage[field] ){
-      cmd.cliPackage[field] = cliPackage[field];
+      env.cliPackage[field] = cliPackage[field];
     }
     if( modulePackage && modulePackage[field] ){
-      cmd.modulePackage[field] = modulePackage[field];
+      env.modulePackage[field] = modulePackage[field];
     }
   });
 }
