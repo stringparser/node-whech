@@ -6,6 +6,9 @@ var pack = require('../');
 
 var util = require('./_util.js');
 
+// the dummy configFile
+process.argv[1] = 'test/whechfile';
+
 describe(packageName, function(){
 
   util.testSuite().forEach(function(file){

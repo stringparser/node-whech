@@ -5,7 +5,8 @@ var should = require('should');
 module.exports = function(whech){
 
   it('should return object with all whech properties', function(){
-    should(whech.sync('which')).be.an.Object
+    var env = whech.sync('which');
+    should(env).be.an.Object
       .and
       .have.properties([
         'name',

@@ -38,14 +38,13 @@ function whech(env_, cb){
 
       env.extension = env.extension || '.js';
       env.configFile = env.configFile || env.name + 'file';
-      if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
       if( !env.runFromBin ){
         env.cwd = path.resolve(env.cwd, path.dirname(argv[1]));
         env.configFile = path.basename(argv[1]);
       }
+      if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
 
-
-      findup(process.cwd(), env.configFile, function(err, configDir){
+      findup(env.cwd, env.configFile, function(err, configDir){
         env.configFile = err || path.join(configDir, env.configFile);
         cb(err, env);
       });
@@ -85,11 +84,11 @@ function whechSync(env_){
 
   env.extension = env.extension || '.js';
   env.configFile = env.configFile || env.name + 'file';
-  if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
   if( !env.runFromBin ){
     env.cwd = path.resolve(env.cwd, path.dirname(argv[1]));
     env.configFile = path.basename(argv[1]);
   }
+  if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
   env.configFile = findup(env.configFile, { cwd : env.cwd });
 
   return env;
