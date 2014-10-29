@@ -2,7 +2,7 @@
 
 [<img alt="build" src="http://img.shields.io/travis/stringparser/node-whech/master.svg?style=flat-square" align="left"/>](https://travis-ci.org/stringparser/node-whech/builds) [<img alt="NPM version" src="http://img.shields.io/npm/v/whech.svg?style=flat-square" align="right"/>](http://www.npmjs.org/package/whech)
 
-<p>which the heck directions</p>
+<p align="center">which the heck directions</p>
 
 Was the script run from a bin? <br>
 What is the main `node_modules`directory?<br>
