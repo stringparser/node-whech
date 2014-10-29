@@ -15,40 +15,44 @@ var main = process.mainModule;
 
 function whichBlib(cmd_, cb){
   var cmd = check(cmd_);
+  cmd.cwd = cmd.cwd || process.cwd();
 
   which(cmd.name, function(err, whichName){
-    if(err){ throw cb(err); }
-    cmd.extension = cmd.extension || '.js';
-    cmd.which = whichName;
+    cmd.which = err || whichName;
     cmd.runFromBin = cmd.which === argv[1];
-    cmd.configFile = cmd.configFile || cmd.name + 'file';
-    if( !path.extname(cmd.configFile) ){  cmd.configFile += cmd.extension;  }
+
     npm.load(function(cli, npm_){
-      findup(process.cwd(), cmd.configFile, function(err, configDir){
-        cmd.mainDir = npm_.dir;
-        cmd.globalDir = npm_.globalDir;
+      cmd.mainDir = npm_.dir;
+      cmd.globalDir = npm_.globalDir;
 
-        if( !err ){ cmd.configFile = path.join(configDir, cmd.configFile); }
-        else { cmd.configFile = err; }
+      var cliPackage; cmd.cliPackage = { };
+      var modulePackage; cmd.modulePackage = { };
+      var pack = path.join(cmd.name, 'package');
 
-        var cliPackage; cmd.cliPackage = { };
-        var modulePackage; cmd.modulePackage = { };
-        var pack = path.join(cmd.name, 'package');
-        try {  modulePackage = require(path.join(cmd.mainDir, pack));  }
-          catch(err){
-            cmd.modulePackage = err;
-            return cb(err, cmd);
-          }
-        try {  cliPackage = require(path.join(cmd.globalDir, pack));  }
-          catch(err){
-            cmd.cliPackage = err;
-            copyFields(cmd, modulePackage);
-            return cb(err, cmd);
-          }
+      try {  modulePackage = require(path.join(cmd.mainDir, pack));  }
+        catch(err){  cmd.modulePackage = err;  }
+      try {  cliPackage = require(path.join(cmd.globalDir, pack));  }
+        catch(err){  cmd.cliPackage = err;  }
 
-        copyFields(cmd, modulePackage, cliPackage);
-        cb(err || null, cmd);
-      });
+      copyFields(cmd, modulePackage, cliPackage);
+
+      if( cmd.runFromBin ){
+        cmd.extension = cmd.extension || '.js';
+        cmd.configFile = cmd.configFile || cmd.name + 'file';
+        if( !path.extname(cmd.configFile) ){  cmd.configFile += cmd.extension;  }
+        cmd.configFile = findup(cmd.configFile, { cwd : cmd.cwd });
+
+        findup(process.cwd(), cmd.configFile, function(err, configDir){
+          cmd.configFile = err || path.join(configDir, cmd.configFile);
+          cb(err, cmd);
+        });
+      } else {
+        cmd.configFile = argv[1];
+        if( cmd.configFile !== path.basename(cmd.configFile) ){
+          cmd.mainDir = path.join(cmd.cwd, path.dirname(cmd.configFile));
+        }
+        cb(err, cmd);
+      }
     });
   });
 }
@@ -56,40 +60,45 @@ function whichBlib(cmd_, cb){
 function syncWhichBlib(cmd_){
   var cmd = check(cmd_);
   cmd.cwd = process.cwd();
-  cmd.extension = cmd.extension || '.js';
-  cmd.configFile = cmd.configFile || cmd.name + 'file';
-  if( !path.extname(cmd.configFile) ){  cmd.configFile += cmd.extension;  }
 
   var which = require('which');
   var findup = require('findup-sync');
 
   cmd.which = which.sync(cmd.name);
   cmd.runFromBin = cmd.which === argv[1];
-  cmd.configFile = findup(cmd.configFile, { cwd : cmd.cwd });
 
   cmd.mainDir = main.paths[0];
   cmd.globalDir = null;
-  if( cmd.which ){
-    // TODO: find a non hacky way to do this
-    cmd.globalDir = path.resolve(cmd.which || '.', '..', '..', 'lib', 'node_modules');
-  }
+  // TODO: find a non hacky way to do this
+  try{
+    cmd.globalDir = path.resolve(cmd.which, '..', '..', 'lib', 'node_modules');
+  } catch(err){
+      cmd.which  = new Error('not found');
+      cmd.globalDir = new Error('counld not find globalDir');
+    }
 
   var cliPackage; cmd.cliPackage = { };
   var modulePackage; cmd.modulePackage = { };
   var pack = path.join(cmd.name, 'package');
   try {  modulePackage = require(path.join(cmd.mainDir, pack));  }
-    catch(err){
-      cmd.modulePackage = err;
-      return cmd;
-    }
+    catch(err){  cmd.modulePackage = err;  }
   try {  cliPackage = require(path.join(cmd.globalDir, pack));  }
-    catch(err){
-      cmd.cliPackage = err;
-      copyFields(cmd, modulePackage);
-      return cmd;
-    }
+    catch(err){  cmd.cliPackage = err;  }
 
   copyFields(cmd, modulePackage, cliPackage);
+
+  if( cmd.runFromBin ){
+    cmd.extension = cmd.extension || '.js';
+    cmd.configFile = cmd.configFile || cmd.name + 'file';
+    if( !path.extname(cmd.configFile) ){  cmd.configFile += cmd.extension;  }
+    cmd.configFile = findup(cmd.configFile, { cwd : cmd.cwd });
+  } else {
+    cmd.configFile = argv[1];
+    if( cmd.configFile !== path.basename(cmd.configFile) ){
+      cmd.mainDir = path.join(cmd.cwd, path.dirname(cmd.configFile));
+    }
+  }
+
   return cmd;
 }
 
