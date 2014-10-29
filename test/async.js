@@ -7,7 +7,6 @@ module.exports = function(whech){
   it('should return object with all whech properties', function(done){
 
     whech('which', function(err, env){
-      console.log(env);
       should(env).be.an.Object
         .and
         .have.properties([
