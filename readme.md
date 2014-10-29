@@ -3,6 +3,8 @@
 [<img alt="build" src="http://img.shields.io/travis/stringparser/whech/master.svg?style=flat-square" align="left"/>](https://travis-ci.org/stringparser/whech/builds)
 [<img alt="NPM version" src="http://img.shields.io/npm/v/whech.svg?style=flat-square" align="right"/>](http://www.npmjs.org/package/whech)
 
+which the heck directions
+
 <br>
 Was the script run from a bin? <br>
 What is the main `node_modules`directory?<br>
@@ -60,6 +62,11 @@ If a the property is not found an error instance will be that key value.
 ### test
 
     $ npm test
+
+### todo
+
+ - [ ] Make better tests
+ - [ ] Review and see if there is something missing
 
 ### license
 
