@@ -1,7 +1,7 @@
 {
   "name": "whech",
   "main": "index.js",
-  "version": "0.5.6",
+  "version": "0.5.7",
   "engines": {
     "node": ">= 0.10.0"
   },
