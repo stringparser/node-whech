@@ -1,7 +1,7 @@
 {
   "name": "whech",
   "main": "index.js",
-  "version": "0.5.7",
+  "version": "0.5.8",
   "engines": {
     "node": ">= 0.10.0"
   },
@@ -12,7 +12,7 @@
   },
   "author": "Javier Carrillo",
   "description": "which the heck directions",
-  "repository": "stringparser/whech",
+  "repository": "stringparser/node-whech",
   "homepage": "https://github.com/stringparser/node-whech",
   "keywords": [
     "which",
