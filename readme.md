@@ -4,10 +4,11 @@
 
 <p align="center">which the heck directions</p>
 
-Was the script run from a bin? <br>
-What is the main `node_modules`directory?<br>
-There is some config file asociated to it?<br>
-What is the global `node_modules` directory?<br>
+Answering this questions:
+- Was the script run from a bin?
+- There is some config file asociated to it?
+- What is the main or/and global `node_modules`directory?
+  - If so fetch me some fields from that package
 
 ## install
 
@@ -20,9 +21,9 @@ var whech = require('whech');
 
 whech.packageFields = ['version'];
 
-whech('which', function(err, cmd){
+whech('which', function(err, env){
   if(err) throw err;
-  console.log(cmd);
+  console.log(env);
   // =>
   // { name: 'which',
   //   extension: '.js',
@@ -39,23 +40,38 @@ whech('which', function(err, cmd){
 
 ### documentation
 
-`whech(spec, callback)`
+`var whech = require('whech')`
 
-The function returned by the package is asynchronous. To use the `sync` version do `whench.sync`
+The function returned by the package is asynchronous. 
+To use the `sync` version take `whech.sync`.
+To specify what properties you want from the `cli` and `module` packages change
+`whech.packageFields` by default `whech.packageFields = ['version']`.
+
+### async 
+
+`whech(spec, callback)`
 
 #### spec 
 type `string` or `object`
 
-when the spec is  a string it becomnes cmd.name
-when spec is an object overrides the properties of the return cmd
+- If spec is  a string it becomnes `env.name` (see below).
+- If spec is an object overrides the default properties of `env` (see below).
 
-#### callback(err, cmd)
+If something is not found instead of throwing an error is assigned to that `env` key value.
 
-The callback is called when all is done with the last error in the first argument if there was one and the second the found `cmd` properties.
+#### callback(err, env)
 
-returns an object with the example properties
+`callback` is called with the last error if there was one.
 
-If a the property is not found an error instance will be that key value.
+`env` properties:
+ - name: the name of the spec
+ - [which](https://www.npmjs.org/package/which): first instance of an executable in the PATH
+ - runFromBin: wether or not `process.argv` contains `env.which`
+ - configFile: `spec.configFile` if was given and if not `env.name` + `'file'` + `env.extension`.
+ - mainDir: `npm.dir`
+ - globalDir: `npm.globalDir`
+ - cliPackage: `require(path.join(env.globalDir, env.name, 'package'))`
+ - modulePackage: `require(path.join(env.mainDir, env.name, 'package'))`
 
 ### test
 
