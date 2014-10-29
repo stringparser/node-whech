@@ -1,6 +1,6 @@
 # whech [<img alt="progressed.io" src="http://progressed.io/bar/50" align="right"/>](https://github.com/fehmicansaglam/progressed.io)
 
-[<img alt="build" src="http://img.shields.io/travis/stringparser/whech/master.svg?style=flat-square" align="left"/>](https://travis-ci.org/stringparser/whech/builds)
+[<img alt="build" src="http://img.shields.io/travis/stringparser/node-whech/master.svg?style=flat-square" align="left"/>](https://travis-ci.org/stringparser/node-whech/builds)
 [<img alt="NPM version" src="http://img.shields.io/npm/v/whech.svg?style=flat-square" align="right"/>](http://www.npmjs.org/package/whech)
 
 <br>
