@@ -73,6 +73,16 @@ If something is not found instead of throwing an error is assigned to that `env`
  - cliPackage: `require(path.join(env.globalDir, env.name, 'package'))`
  - modulePackage: `require(path.join(env.mainDir, env.name, 'package'))`
 
+### sync 
+
+```js
+var whechSync = require('whech').sync;
+```
+
+`whechSync(spec)`
+
+the function returns `env` with the same properties as the `async` version.
+
 ### test
 
     $ npm test
