@@ -11,6 +11,7 @@ exports.sync = whechSync;
 exports.packageFields = ['version'];
 
 var argv = process.argv;
+var main = process.mainModule;
 
 function whech(env_, cb){
   var env = check(env_);
@@ -35,23 +36,19 @@ function whech(env_, cb){
 
       copyFields(env, modulePackage, cliPackage);
 
-      if( env.runFromBin ){
-        env.extension = env.extension || '.js';
-        env.configFile = env.configFile || env.name + 'file';
-        if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
-        env.configFile = findup(env.configFile, { cwd : env.cwd });
-
-        findup(process.cwd(), env.configFile, function(err, configDir){
-          env.configFile = err || path.join(configDir, env.configFile);
-          cb(err, env);
-        });
-      } else {
-        env.configFile = argv[1];
-        if( env.configFile !== path.basename(env.configFile) ){
-          env.mainDir = path.join(env.cwd, path.dirname(env.configFile));
-        }
-        cb(err, env);
+      env.extension = env.extension || '.js';
+      env.configFile = env.configFile || env.name + 'file';
+      if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
+      if( !env.runFromBin ){
+        env.cwd = path.resolve(env.cwd, path.dirname(argv[1]));
+        env.configFile = path.basename(argv[1]);
       }
+
+
+      findup(process.cwd(), env.configFile, function(err, configDir){
+        env.configFile = err || path.join(configDir, env.configFile);
+        cb(err, env);
+      });
     });
   });
 }
@@ -86,17 +83,14 @@ function whechSync(env_){
 
   copyFields(env, modulePackage, cliPackage);
 
-  if( env.runFromBin ){
-    env.extension = env.extension || '.js';
-    env.configFile = env.configFile || env.name + 'file';
-    if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
-    env.configFile = findup(env.configFile, { cwd : env.cwd });
-  } else {
-    env.configFile = argv[1];
-    if( env.configFile !== path.basename(env.configFile) ){
-      env.mainDir = path.join(env.cwd, path.dirname(env.configFile));
-    }
+  env.extension = env.extension || '.js';
+  env.configFile = env.configFile || env.name + 'file';
+  if( !path.extname(env.configFile) ){  env.configFile += env.extension;  }
+  if( !env.runFromBin ){
+    env.cwd = path.resolve(env.cwd, path.dirname(argv[1]));
+    env.configFile = path.basename(argv[1]);
   }
+  env.configFile = findup(env.configFile, { cwd : env.cwd });
 
   return env;
 }
