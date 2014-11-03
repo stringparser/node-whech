@@ -10,6 +10,7 @@ exports = module.exports = whech;
 exports.sync = whechSync;
 exports.packageFields = ['version'];
 
+console.log(process.env.PATH);
 var npmBin = process.env.PATH.split(path.delimiter)
   .filter(function(inst){
     console.log(inst);
