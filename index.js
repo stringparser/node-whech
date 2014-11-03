@@ -1,6 +1,6 @@
 'use strict';
 
-var npm = require('npm');
+var npm = require('npm'); npm.load();
 var path = require('path');
 var which = require('which');
 var findup = require('findup');
@@ -59,16 +59,16 @@ function whechCommon(env, npm_){
 
   env.mainDir = npm_.dir
     || path.join(env.cwd, 'node_modules');
-  env.globalDir = npm_.globalDir
-    || type(env.which).string
-     ? path.resolve(env.which || '', '..', '..', 'lib', 'node_modules')
-     : '';
+
+  env.bin = process.env.PATH.split(path.delimiter).filter(function(inst){
+      return inst.match(new RegExp('npm'+path.sep+'bin$'));
+    })[0] || '';
+  env.globalDir = path.resolve(env.bin, '..', 'lib', 'node_modules');
 
   env.cliPackage = { };
   env.modulePackage = { };
-  var pack = path.join(env.name, 'package');
-  var cliPackage = path.join(env.globalDir, pack);
-  var modulePackage = path.join(env.mainDir, pack);
+  var modulePackage = path.join(env.name, 'package');
+  var cliPackage = path.join(env.globalDir, modulePackage);
   var errorMessage = 'could not find module '+env.name+' on ';
 
   try {  modulePackage = require(modulePackage);  }
