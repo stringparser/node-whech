@@ -1,6 +1,5 @@
 'use strict';
 
-var npm = require('npm');
 var path = require('path');
 var which = require('which');
 var findup = require('findup');
@@ -11,18 +10,21 @@ exports = module.exports = whech;
 exports.sync = whechSync;
 exports.packageFields = ['version'];
 
+var npmBin = process.env.PATH.split(path.delimiter)
+  .filter(function(inst){
+    return inst.match(new RegExp('npm'+path.sep+'bin$'));
+  })[0];
+
 var argv = process.argv;
 
 function whech(env_, cb){
   var env = check(env_);
   which(env.name, function(err, whichName){
     env.which = err || whichName;
-    npm.load(function(cli, npm_){
-      whechCommon(env, npm_);
-      findup(env.cwd, env.configFile, function(err, configDir){
-        env.configFile = err || path.join(configDir, env.configFile);
-        cb(err, env);
-      });
+    whechCommon(env);
+    findup(env.cwd, env.configFile, function(err, configDir){
+      env.configFile = err || path.join(configDir, env.configFile);
+      cb(err, env);
     });
   });
 }
@@ -37,16 +39,11 @@ function whechSync(env_){
 function whechCommon(env, npm_){
   npm_ = npm_ || { };
 
-  env.extension = type(env.extension).string
-    || '.js';
-  env.configFile = type(env.configFile).string
-    || env.name + 'file';
-
-  env.cwd = env.cwd
-    || process.cwd();
-  env.which = env.which
-    || which.sync(env.name)
-    || new Error('bin of '+env.name+' not found');
+  env.bin = npmBin;
+  env.cwd = env.cwd  || process.cwd();
+  env.extension = type(env.extension).string  || '.js';
+  env.configFile = type(env.configFile).string || env.name + 'file';
+  env.which = env.which || which.sync(env.name) || new Error('bin of '+env.name+' not found');
   env.runFromBin = argv.indexOf(env.which) > -1;
 
   if( !env.runFromBin ){
@@ -57,26 +54,18 @@ function whechCommon(env, npm_){
     env.configFile += env.extension;
   }
 
-  env.mainDir = npm_.dir
-    || path.join(env.cwd, 'node_modules');
-
-  env.bin = process.env.PATH.split(path.delimiter).filter(function(inst){
-      return inst.match(new RegExp('npm'+path.sep+'bin$'));
-    })[0] || '';
-  env.globalDir = path.resolve(env.bin, '..', 'lib', 'node_modules');
-
-  env.cliPackage = { };
-  env.modulePackage = { };
-  var modulePackage = path.join(env.name, 'package');
-  var cliPackage = path.join(env.globalDir, modulePackage);
+  env.mainDir = path.join(env.cwd, 'node_modules');
+  env.globalDir = path.resolve(npmBin, '..', 'lib', 'node_modules');
+  env.modulePackage = path.join(env.name, 'package');
+  env.cliPackage = path.join(env.globalDir, env.name, 'package');
   var errorMessage = 'could not find module '+env.name+' on ';
 
-  try {  modulePackage = require(modulePackage);  }
-    catch(err){  env.modulePackage = new Error(errorMessage + modulePackage);  }
-  try {  cliPackage = require(cliPackage);  }
-    catch(err){  env.cliPackage = new Error(errorMessage + cliPackage);  }
+  try {  env.modulePackage = require(env.modulePackage);  }
+    catch(err){  env.modulePackage = new Error(errorMessage + env.modulePackage);  }
+  try {  env.cliPackage = require(env.cliPackage);  }
+    catch(err){  env.cliPackage = new Error(errorMessage + env.cliPackage);  }
 
-  copyFields(env, modulePackage, cliPackage);
+  copyFields(env, env.modulePackage, env.cliPackage);
 }
 
 function check(env){
@@ -93,7 +82,11 @@ function check(env){
   return env;
 }
 
-function copyFields(env, modulePackage, cliPackage){
+function copyFields(env, modulePackage_, cliPackage_){
+  var cliPackage = cliPackage_;
+  var modulePackage = modulePackage_;
+  env.cliPackage = cliPackage_ instanceof Error ? cliPackage_ : { };
+  env.modulePackage = modulePackage_ instanceof Error ? modulePackage_ : { };
   if( !exports.packageFields.length ){ return ; }
   exports.packageFields.forEach(function(field){
     if( cliPackage && cliPackage[field] ){

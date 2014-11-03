@@ -10,7 +10,7 @@ module.exports = {
     var exclude = [
       '_main.js',
       '_util.js',
-      'whechfile.js'
+      'gulpfile.js'
     ];
 
     // use it also to omit _main & _util files
