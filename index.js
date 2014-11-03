@@ -52,12 +52,14 @@ function whechCommon(env){
     env.configFile = path.basename(env.configFile + (env.extension || '.js'));
   }
 
+  var envNameRe = new RegExp(env.name+'.*');
+
   env.localDir = env.localDir || '';
-  try {  env.localDir = require.resolve(env.name).replace(new RegExp(env.name+'.*'), '');  }
+  try {  env.localDir = require.resolve(env.name).replace(envNameRe, '');  }
     catch(err){ env.moduleDir = err; }
 
   env.globalDir = env.globalDir || '';
-  try { env.globalDir = require.resolve(env.which).replace(new RegExp(env.name+'.*'), '');  }
+  try { env.globalDir = require.resolve(env.which).replace(envNameRe, '');  }
     catch(err){ env.globalDir = err; }
 
   var globalPackage, localPackage;
