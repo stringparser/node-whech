@@ -12,6 +12,7 @@ exports.packageFields = ['version'];
 
 var npmBin = process.env.PATH.split(path.delimiter)
   .filter(function(inst){
+    console.log(inst);
     return inst.match(new RegExp('npm'+path.sep+'bin$'));
   })[0];
 
@@ -36,8 +37,7 @@ function whechSync(env_){
   return env;
 }
 
-function whechCommon(env, npm_){
-  npm_ = npm_ || { };
+function whechCommon(env){
 
   env.bin = npmBin;
   env.cwd = env.cwd  || process.cwd();
