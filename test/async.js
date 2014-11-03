@@ -2,25 +2,14 @@
 
 var should = require('should');
 
-module.exports = function(whech){
+module.exports = function(whech, util){
 
   it('should return object with all whech properties', function(done){
 
     whech('gulp', function(err, env){
-      should(env).be.an.Object
-        .and
-        .have.properties([
-          'name',
-          'bin',
-          'cwd',
-          'which',
-          'runFromBin',
-          'mainDir',
-          'globalDir',
-          'cliPackage',
-          'modulePackage',
-          'configFile'
-       ]);
+      var keys = Object.keys(env);
+      should(keys).containDeep(util.whechProps);
+      should(keys.length).be.eql(util.whechProps.length);
       done();
     });
   });

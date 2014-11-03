@@ -2,24 +2,12 @@
 
 var should = require('should');
 
-module.exports = function(whech){
+module.exports = function(whech, util){
 
   it('should return object with all whech properties', function(){
-    var env = whech.sync('gulp');
-    should(env).be.an.Object
-      .and
-      .have.properties([
-        'name',
-        'bin',
-        'cwd',
-        'which',
-        'runFromBin',
-        'mainDir',
-        'globalDir',
-        'cliPackage',
-        'modulePackage',
-        'configFile'
-     ]);
+    var env = whech.sync('gulp');  var keys = Object.keys(env);
+    should(keys).containDeep(util.whechProps);
+    should(keys.length).be.eql(util.whechProps.length);
   });
 
   it('env.configFile should not be null', function(){

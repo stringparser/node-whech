@@ -30,10 +30,10 @@ whech('which', function(err, env){
   //   which: '/usr/bin/which',
   //   runFromBin: false,
   //   configFile: [Error: not found],
-  //   mainDir: '/home/jcm/code/whech/node_modules',
+  //   localDir: '/home/jcm/code/whech/node_modules',
   //   globalDir: '/home/jcm/npm/lib/node_modules',
-  //   cliPackage: { [Error: Cannot find module] code: 'MODULE_NOT_FOUND' },
-  //   modulePackage: { version: '1.0.5' } }
+  //   globalPackage: { [Error: Cannot find module] code: 'MODULE_NOT_FOUND' },
+  //   localPackage: { version: '1.0.5' } }
 });
 ```
 
@@ -68,10 +68,10 @@ If something is not found instead of throwing an error is assigned to that `env`
  - [which](https://www.npmjs.org/package/which): first instance of an executable in the PATH
  - runFromBin: wether or not `process.argv` contains `env.which`
  - configFile: `spec.configFile` if was given and if not `env.name` + `'file'` + `env.extension`.
- - mainDir: `npm.dir`
+ - localDir: `npm.dir`
  - globalDir: `npm.globalDir`
- - cliPackage: `require(path.join(env.globalDir, env.name, 'package'))`
- - modulePackage: `require(path.join(env.mainDir, env.name, 'package'))`
+ - localPackage: `require(path.join(env.globalDir, env.name, 'package'))`
+ - localPackage: `require(path.join(env.localDir, env.name, 'package'))`
 
 ### sync 
 

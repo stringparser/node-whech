@@ -19,5 +19,16 @@ module.exports = {
     });
     testSuite.unshift.apply(testSuite, testFirst);
     return testSuite;
-  }
+  },
+  whechProps : [
+    'name',
+    'cwd',
+    'which',
+    'runFromBin',
+    'localDir',
+    'globalDir',
+    'globalPackage',
+    'localPackage',
+    'configFile'
+  ]
 };
