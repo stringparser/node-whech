@@ -1,6 +1,5 @@
 'use strict';
 
-var fs = require('fs');
 var npm = require('npm');
 var path = require('path');
 var which = require('which');
@@ -55,17 +54,16 @@ function whechCommon(env){
   }
 
   var envNameRe = new RegExp(env.name+'.*');
-
-  env.localDir = env.localDir || '';
-  try {  env.localDir = require.resolve(env.name).replace(envNameRe, '');  }
-    catch(err){ env.moduleDir = err; }
+  var globalPackage, localPackage;
+  var packagePath = path.join(env.name, 'package');
 
   env.globalDir = env.globalDir || '';
   try { env.globalDir = require.resolve(env.which).replace(envNameRe, '');  }
     catch(err){ env.globalDir = err; }
 
-  var globalPackage, localPackage;
-  var packagePath = path.join(env.name, 'package');
+  env.localDir = env.localDir || '';
+  try {  env.localDir = require.resolve(env.name).replace(envNameRe, '');  }
+    catch(err){ env.localDir = err; }
 
   env.localPackage = { };
   try {  localPackage = require(path.join(env.localDir, packagePath));  }
