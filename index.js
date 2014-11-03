@@ -41,8 +41,10 @@ function whechSync(env_){
 
 function whechCommon(env){
   env.cwd = env.cwd || process.cwd();
-  env.which = env.which || which.sync(env.name);
   env.configFile = type(env.configFile).string || env.name + 'file';
+
+  try {  env.which = env.which || which.sync(env.name);  }
+    catch(err){ env.which = err; }
 
   if( !(env.runFromBin = argv.indexOf(env.which) > -1) ){
     env.configFile = path.basename(argv[1]);
