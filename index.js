@@ -1,6 +1,6 @@
 'use strict';
 
-var npm = require('npm'); npm.load();
+var npm = require('npm');
 var path = require('path');
 var which = require('which');
 var findup = require('findup');
