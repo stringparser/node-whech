@@ -66,7 +66,7 @@ function whechCommon(env){
     catch(err){ env.localDir = err; }
 
   env.localPackage = { };
-  try {  localPackage = require(path.join(env.localDir, packagePath));  }
+  try {  localPackage = require(path.join(packagePath));  }
     catch(err){ env.localPackage = err;  }
 
   env.globalPackage = { };
