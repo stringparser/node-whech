@@ -3,7 +3,9 @@ before_script:
   - npm install gulp
   - npm install gulp -g
 node_js:
-  - "0.11"
   - "0.10"
+  - "0.11"
+  - "0.12"
+  - "iojs-v1.5.0"
 notifications:
   email: true
