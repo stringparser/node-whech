@@ -26,7 +26,7 @@ function whech(name, cb){
 function getSpec(name){
   var env = type(name).plainObject || {name: name};
   if(typeof env.name !== 'string' || !env.name.trim()){
-    throw new TypeError('`o.name` should be  non emtpy string');
+    throw new TypeError('`o.name` should be a non emtpy string');
   }
   return env;
 }
