@@ -44,7 +44,7 @@ whech.sync = function whechSync(name){
 //
 function whechCommon(spec){
   spec.cwd = spec.cwd || process.cwd();
-  spec.configFile = spec.name + 'file';
+  spec.configFile = spec.configFile || spec.name + 'file';
 
   try {
     spec.which = spec.which || which.sync(spec.name);
@@ -62,15 +62,19 @@ function whechCommon(spec){
     );
   }
 
-  var packagePath = path.join(spec.name, 'package');
+  var nameRE = new RegExp(spec.name+'.*');
 
   try {
-    spec.globalDir = path.dirname(require.resolve(spec.which));
+    spec.globalDir = spec.globalDir
+      || require.resolve(spec.which).replace(nameRE, '');
   } catch(err){ spec.globalDir = err; }
 
   try {
-    spec.localDir = path.dirname(require.resolve(spec.name));
+    spec.localDir = spec.localDir
+      || require.resolve(spec.name).replace(nameRE, '');
   } catch(err){ spec.localDir = err; }
+
+  var packagePath = path.join(spec.name, 'package');
 
   try {
     spec.localPackage = require(packagePath);
