@@ -59,16 +59,15 @@ function whechCommon(o){
     o.globalPackage = require(path.join(o.globalDir, packagePath));
   } catch(err){
     if(o.globalDir){ o.globalPackage = err; }
-    else { o.globalDir = err; }
+    else { o.globalPackage = o.globalDir = err; }
   }
 
   try {
     o.localDir = require.resolve(o.name).replace(nameRE, '');
     o.localPackage = require(packagePath);
   } catch(err){
-    o.localDir = err; 
     if(o.localDir){ o.localPackage = err; }
-    else { o.localDir = err; }
+    else { o.localPackage = o.localDir = err; }
   }
 
   return o;
