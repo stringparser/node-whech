@@ -13,7 +13,7 @@ exports = module.exports = whech;
 function getSpec(name){
   var env = type(name).plainObject || {name: name};
   if(typeof env.name !== 'string' || !env.name.trim()){
-    throw new TypeError('`spec.name` should be  non emtpy string');
+    throw new TypeError('`o.name` should be  non emtpy string');
   }
   return env;
 }
@@ -21,13 +21,12 @@ function getSpec(name){
 // asynchronous version
 //
 function whech(name, cb){
-  var spec = getSpec(name);
-  which(spec.name, function(err, binPath){
-    spec.which = err || binPath;
-    whechCommon(spec);
-    findup(spec.cwd, spec.configFile, function(err, configDir){
-      spec.configFile = err || path.join(configDir, spec.configFile);
-      cb(err, spec);
+  var o = getSpec(name);
+  which(o.name, function(err, binPath){
+    o.which = err || binPath; whechCommon(o);
+    findup(o.cwd, o.configFile, function(err, configDir){
+      o.configFile = err || path.join(configDir, o.configFile);
+      cb(err, o);
     });
   });
 }
@@ -42,47 +41,45 @@ whech.sync = function whechSync(name){
 
 // main operations of sync and async version
 //
-function whechCommon(spec){
-  spec.cwd = spec.cwd || process.cwd();
-  spec.configFile = spec.configFile || spec.name + 'file';
+function whechCommon(o){
+  o.cwd = o.cwd || process.cwd();
+  o.configFile = o.configFile || o.name + 'file';
 
   try {
-    spec.which = spec.which || which.sync(spec.name);
-  } catch(err){ spec.which = err; }
+    o.which = o.which || which.sync(o.name);
+  } catch(err){ o.which = err; }
 
   var argv = process.argv;
-  if(argv[1] && !(spec.runFromBin = argv.indexOf(spec.which) > -1)){
-    spec.configFile = path.basename(argv[1]);
-    spec.cwd = path.resolve(spec.cwd, path.dirname(argv[1]));
+  if(argv[1] && !(o.runFromBin = argv.indexOf(o.which) > -1)){
+    o.configFile = path.basename(argv[1]);
+    o.cwd = path.resolve(o.cwd, path.dirname(argv[1]));
   }
 
-  if(!path.extname(spec.configFile)){
-    spec.configFile = path.basename(
-      spec.configFile + (exports.extension || '.js')
+  if(!path.extname(o.configFile)){
+    o.configFile = path.basename(
+      o.configFile + (exports.extension || '.js')
     );
   }
 
-  var nameRE = new RegExp(spec.name+'.*');
+  var nameRE = new RegExp(o.name+'.*');
 
   try {
-    spec.globalDir = spec.globalDir
-      || require.resolve(spec.which).replace(nameRE, '');
-  } catch(err){ spec.globalDir = err; }
+    o.globalDir = o.globalDir || require.resolve(o.which).replace(nameRE, '');
+  } catch(err){ o.globalDir = err; }
 
   try {
-    spec.localDir = spec.localDir
-      || require.resolve(spec.name).replace(nameRE, '');
-  } catch(err){ spec.localDir = err; }
+    o.localDir = o.localDir || require.resolve(o.name).replace(nameRE, '');
+  } catch(err){ o.localDir = err; }
 
-  var packagePath = path.join(spec.name, 'package');
-
-  try {
-    spec.localPackage = require(packagePath);
-  } catch(err){ spec.localPackage = err;  }
+  var packagePath = path.join(o.name, 'package');
 
   try {
-    spec.globalPackage = require(path.join(spec.globalDir, packagePath));
-  } catch(err){ spec.globalPackage = err; }
+    o.localPackage = require(packagePath);
+  } catch(err){ o.localPackage = err;  }
 
-  return spec;
+  try {
+    o.globalPackage = require(path.join(o.globalDir, packagePath));
+  } catch(err){ o.globalPackage = err; }
+
+  return o;
 }
