@@ -1,10 +1,8 @@
 {
   "name": "whech",
   "main": "index.js",
-  "version": "0.6.2",
-  "engines": {
-    "node": ">= 0.10.0"
-  },
+  "version": "0.7.0",
+  "engines": {"node": ">= 0.10.0"},
   "devDependencies": {
     "mocha": "*",
     "should": "*",
