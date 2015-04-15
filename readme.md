@@ -11,10 +11,6 @@
 - What is the main or/and global `node_modules`directory?
 - Get me some fields of their the local and global packages
 
-## install
-
-    $ npm install --save whech
-
 ## usage
 
 ```javascript
@@ -79,6 +75,14 @@ _arguments_
 _returns_
  - `spec` with same properties listed above
 
+ ## install
+
+With [npm][x-npm]
+
+```js
+ npm install whech
+```
+
 ### test
 
 ```js
@@ -99,6 +103,7 @@ npm test
 [m-which]: http://www.npmjs.com/which
 [m-whech]: http://www.npmjs.com/whech
 
+[x-npm]: http://www.npmjs.com
 [x-travis]: https://travis-ci.org/stringparser/node-whech/builds
 [x-license]: http://opensource.org/licenses/MIT
 
