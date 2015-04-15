@@ -39,9 +39,9 @@ whech.sync = function whechSync(name){
   return env;
 };
 
-// main operations of sync and async version
+// separate configFile
 //
-function whechCommon(o){
+whech.configFile = function(o){
   o.cwd = o.cwd || process.cwd();
   o.configFile = o.configFile || o.name + 'file';
 
@@ -60,6 +60,13 @@ function whechCommon(o){
       o.configFile + (exports.extension || '.js')
     );
   }
+  return o;
+};
+
+// main operations of sync and async version
+//
+function whechCommon(o){
+  whech.configFile(o);
 
   var nameRE = new RegExp(o.name+'.*');
 
