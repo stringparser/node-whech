@@ -16,11 +16,11 @@
 ```javascript
 var whech = require('whech');
 
-whech.packageFields = ['version'];
+whech.ext = '.js';
 
-whech('which', function(err, env){
+whech('which', function(err, spec){
   if(err) throw err;
-  console.log(env);
+  console.log(spec);
   // =>
   // { name: 'which',
   //   which: '/usr/bin/which',
@@ -48,20 +48,24 @@ function whech(string|object spec, function callback)
 ```
 
 _arguments_
- - `spec` type string|object, when string becomens `spec.name`
- - `callback` function to call with the last error if there was one
+ - `spec` type string or object with a name property that is a string
+ - `callback` type function to be called with the last `error` and `spec`
 
-Errors are attached to `spec` properties instead of throwing.
+Errors are attached to `spec` a property instead of throwing.
 
 _spec properties_
- - `name`: the name given as a string or object property
- - [`which`][m-which]: first instance of an executable in the PATH
- - `runFromBin`: wether or not `process.argv` contains `which`
- - `configFile`: `configFile` if given, or `name` + file + '.js'.
- - `localDir`: if wasn't given, the global dir where node_modules are installed
- - `globalDir`: if wasn't given, the local dir where node_modules are installed
+ - `ext` type string, the extension of the configFile
+ - `name` type string the name given as a string or object property
+ - [`which`][m-which] type string first instance of an executable in the PATH
+ - `runFromBin` type boolean, wether or not `process.argv` contains `which`
+ - `configFile` type string, `configFile` if given
+ - `localDir` type string, the global dir where node_modules are installed
+ - `globalDir`: type string, the local dir where node_modules are installed
  - `localPackage`: `require(path.join(name, 'package'))`
  - `globalPackage`: `require(path.join(localDir, name, 'package'))`
+
+_defaults_
+ - `configfile` will default to `name + 'file' + (spec.ext || '.js')`
 
 ### whech.sync
 
