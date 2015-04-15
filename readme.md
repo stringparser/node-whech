@@ -8,13 +8,13 @@ Answering this questions:
 - Was the script run from a bin?
 - There is some config file asociated to it?
 - What is the main or/and global `node_modules`directory?
-  - If so fetch me some fields from that package
+- Get me some fields of their the local and global packages
 
 ## install
 
     $ npm install --save whech
 
-## usage 
+## usage
 
 ```javascript
 var whech = require('whech');
@@ -42,16 +42,16 @@ whech('which', function(err, env){
 
 `var whech = require('whech')`
 
-The function returned by the package is asynchronous. 
+The function returned by the package is asynchronous.
 To use the `sync` version take `whech.sync`.
 To specify what properties you want from the `cli` and `module` packages change
 `whech.packageFields` by default `whech.packageFields = ['version']`.
 
-### async 
+### async
 
 `whech(spec, callback)`
 
-#### spec 
+#### spec
 type `string` or `object`
 
 - If spec is  a string it becomnes `env.name` (see below).
@@ -73,7 +73,7 @@ If something is not found instead of throwing an error is assigned to that `env`
  - localPackage: `require(path.join(env.globalDir, env.name, 'package'))`
  - localPackage: `require(path.join(env.localDir, env.name, 'package'))`
 
-### sync 
+### sync
 
 ```js
 var whechSync = require('whech').sync;
