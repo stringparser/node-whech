@@ -49,7 +49,7 @@ function whech(string|object spec, function callback)
 
 _arguments_
  - `spec` type string|object, when string becomens `spec.name`
- - `callback` function to called with the last error if there was one
+ - `callback` function to call with the last error if there was one
 
 Errors are attached to `spec` properties instead of throwing.
 
@@ -75,7 +75,7 @@ _arguments_
 _returns_
  - `spec` with same properties listed above
 
- ## install
+## install
 
 With [npm][x-npm]
 
