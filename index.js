@@ -48,7 +48,7 @@ function whechCommon(o){
   }
 
   if(!path.extname(o.configFile)){
-    o.configFile = path.basename(o.configFile + (whech.ext || '.js'));
+    o.configFile = path.basename(o.configFile + (o.ext || '.js'));
   }
 
   var nameRE = new RegExp(o.name+'.*');
