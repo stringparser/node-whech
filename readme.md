@@ -1,10 +1,11 @@
-# whech [<img alt="progressed.io" src="http://progressed.io/bar/50" align="right"/>](https://github.com/fehmicansaglam/progressed.io)
+# whech [![build][b-build]][x-travis][![NPM version][b-version]][m-whech]
 
-[<img alt="build" src="http://img.shields.io/travis/stringparser/node-whech/master.svg?style=flat-square" align="left"/>](https://travis-ci.org/stringparser/node-whech/builds) [<img alt="NPM version" src="http://img.shields.io/npm/v/whech.svg?style=flat-square" align="right"/>](http://www.npmjs.org/package/whech)
+[install](#install) -
+[documentation](#documentation) -
+[license](#license)
 
-<p align="center">which the heck directions</p>
 
-Answering this questions:
+[which][m-which] the heck directions for
 - Was the script run from a bin?
 - There is some config file asociated to it?
 - What is the main or/and global `node_modules`directory?
@@ -26,7 +27,6 @@ whech('which', function(err, env){
   console.log(env);
   // =>
   // { name: 'which',
-  //   extension: '.js',
   //   which: '/usr/bin/which',
   //   runFromBin: false,
   //   configFile: [Error: not found],
@@ -40,58 +40,68 @@ whech('which', function(err, env){
 
 ### documentation
 
-`var whech = require('whech')`
-
-The function returned by the package is asynchronous.
-To use the `sync` version take `whech.sync`.
-To specify what properties you want from the `cli` and `module` packages change
-`whech.packageFields` by default `whech.packageFields = ['version']`.
-
-### async
-
-`whech(spec, callback)`
-
-#### spec
-type `string` or `object`
-
-- If spec is  a string it becomnes `env.name` (see below).
-- If spec is an object overrides the default properties of `env` (see below).
-
-If something is not found instead of throwing an error is assigned to that `env` key value.
-
-#### callback(err, env)
-
-`callback` is called with the last error if there was one.
-
-`env` properties:
- - name: the name of the spec
- - [which](https://www.npmjs.org/package/which): first instance of an executable in the PATH
- - runFromBin: wether or not `process.argv` contains `env.which`
- - configFile: `spec.configFile` if was given and if not `env.name` + `'file'` + `env.extension`.
- - localDir: `npm.dir`
- - globalDir: `npm.globalDir`
- - localPackage: `require(path.join(env.globalDir, env.name, 'package'))`
- - localPackage: `require(path.join(env.localDir, env.name, 'package'))`
-
-### sync
-
+The `module.exports` a function
 ```js
-var whechSync = require('whech').sync;
+var whech = require('whech')
+```
+which is asynchronous. To use the `sync` version take `whech.sync`.
+
+### whech
+```js
+function whech(string|object spec, function callback)
 ```
 
-`whechSync(spec)`
+_arguments_
+ - `spec` type string|object, when string becomens `spec.name`
+ - `callback` function to called with the last error if there was one
 
-the function returns `env` with the same properties as the `async` version.
+Errors are attached to `spec` properties instead of throwing.
+
+_spec properties_
+ - `name`: the name given as a string or object property
+ - [`which`][m-which]: first instance of an executable in the PATH
+ - `runFromBin`: wether or not `process.argv` contains `which`
+ - `configFile`: `configFile` if given, or `name` + file + '.js'.
+ - `localDir`: if wasn't given, the global dir where node_modules are installed
+ - `globalDir`: if wasn't given, the local dir where node_modules are installed
+ - `localPackage`: `require(path.join(name, 'package'))`
+ - `globalPackage`: `require(path.join(localDir, name, 'package'))`
+
+### whech.sync
+
+```js
+function whechSync(string|object spec)
+```
+
+_arguments_
+ - `spec`, type string|object, the same as the async version
+
+_returns_
+ - `spec` with same properties listed above
 
 ### test
 
-    $ npm test
+```js
+npm test
+```
 
 ### todo
 
- - [ ] Make better tests
+ - [ ] More tests
  - [ ] Review and see if there is something missing
 
 ### license
 
-[<img alt="LICENSE" src="http://img.shields.io/npm/l/whech.svg?style=flat-square"/>](http://opensource.org/licenses/MIT)
+[![LICENSE](http://img.shields.io/npm/l/whech.svg?style=flat-square)](
+  http://opensource.org/licenses/MIT
+)
+
+[m-which]: http://www.npmjs.com/which
+[m-whech]: http://www.npmjs.com/whech
+
+[x-travis]: https://travis-ci.org/stringparser/node-whech/builds
+[x-license]: http://opensource.org/licenses/MIT
+
+[b-build]: http://img.shields.io/travis/stringparser/node-whech/master.svg?style=flat-square
+[b-gitter]: https://badges.gitter.im/Join%20Chat.svg
+[b-version]: http://img.shields.io/npm/v/whech.svg?style=flat-square
