@@ -24,11 +24,11 @@ function whech(name, cb){
 // check input and give an object with the spec
 //
 function getSpec(name){
-  var env = type(name).plainObject || {name: name};
-  if(typeof env.name !== 'string' || !env.name.trim()){
-    throw new TypeError('`o.name` should be a non emtpy string');
+  var o = type(name).plainObject || {name: name};
+  if(typeof o.name !== 'string'){
+    throw new TypeError('`name` should be string');
   }
-  return env;
+  return o;
 }
 
 // common ops in sync and async version
@@ -51,7 +51,7 @@ function whechCommon(o){
     o.configFile = path.basename(o.configFile + (o.ext || '.js'));
   }
 
-  var nameRE = new RegExp(o.name+'.*');
+  var nameRE = new RegExp(o.name + '.*');
   var packagePath = path.join(o.name, 'package');
 
   try {
@@ -76,9 +76,9 @@ function whechCommon(o){
 // sync counterpart
 //
 whech.sync = function whechSync(name){
-  var env = whechCommon(getSpec(name));
-  env.configFile = findupSync(env.configFile, {cwd : env.cwd})
-    || new Error('`'+env.configFile+'` wasn\'t found from `'+env.cwd+'`');
+  var o = whechCommon(getSpec(name));
+  o.configFile = findupSync(o.configFile, {cwd : o.cwd})
+    || new Error(o.configFile + ' wasn\'t found from ' + o.cwd);
 
-  return env;
+  return o;
 };
